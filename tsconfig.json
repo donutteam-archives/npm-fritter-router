@@ -1,0 +1,157 @@
+{
+	"compilerOptions": {
+		//
+		// Type Checking
+		//
+
+		"allowUnreachableCode": false,
+		"allowUnusedLabels": false,
+		"alwaysStrict": true,
+		"exactOptionalPropertyTypes": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitAny": true,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"strict": true,
+		"strictBindCallApply": true,
+		"strictFunctionTypes": true,
+		"strictNullChecks": true,
+		"strictPropertyInitialization": false,
+		"useUnknownInCatchVariables": true,
+
+		//
+		// Modules
+		//
+
+		"allowArbitraryExtensions": false,
+		"allowImportingTsExtensions": false,
+		"allowUmdGlobalAccess": false,
+		// "baseUrl": ".",
+		// "customConditions": [],
+		"module": "ESNext",
+		"moduleResolution": "node",
+		// "moduleSuffixes": [],
+		"noResolve": false,
+		// "paths": [],
+		"resolveJsonModule": false,
+		"resolvePackageJsonExports": false,
+		"resolvePackageJsonImports": false,
+		"rootDir": "./src",
+		// "rootDirs": [],
+		// "typeRoots": [],
+		// "types": [],
+
+		//
+		// Emit
+		//
+
+		"declaration": true,
+		// "declarationDir": "./build",
+		"declarationMap": true,
+		"downlevelIteration": false,
+		"emitBOM": false,
+		"emitDeclarationOnly": false,
+		"importHelpers": false,
+		// "importsNotUsedAsValues": "remove",
+		"inlineSourceMap": false,
+		"inlineSources": false,
+		// "mapRoot": "",
+		// "newLine": "",
+		"noEmit": false,
+		"noEmitHelpers": false,
+		"noEmitOnError": false,
+		"outDir": "./lib",
+		// "outFile": "",
+		"preserveConstEnums": true,
+		// "preserveValueImports": false,
+		"removeComments": false,
+		"sourceMap": true,
+		// "sourceRoot": "",
+		"stripInternal": false,
+
+		//
+		// JavaScript Support
+		//
+
+		"allowJs": false,
+		"checkJs": false,
+		"maxNodeModuleJsDepth": 0,
+
+		//
+		// Editor Support
+		//
+
+		"disableSizeLimit": false,
+		"plugins": [],
+
+		//
+		// Interop Constraints
+		//
+
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": false,
+		"forceConsistentCasingInFileNames": true,
+		"isolatedModules": false,
+		// "preserveSymlinks": false,
+		// "verbatimModuleSyntax": true,				// Cannot enable this because of @easypost/api
+
+		//
+		// Backwards Compatibility
+		//
+
+		// N/A
+
+		//
+		// Language and Environment
+		//
+
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		// "jsx": "",
+		// "jsxFactory": "",
+		// "jsxFragmentFactory": "",
+		// "jsxImportSource": "",
+		// "lib": [],
+		// "moduleDetection": "",
+		// "noLib": false,
+		// "reactNamespace": "",
+		"target": "ESNext",
+		"useDefineForClassFields": true,
+
+		//
+		// Compiler Diagnostics
+		//
+
+		// N/A
+
+		//
+		// Projects
+		//
+
+		// N/A
+
+		//
+		// Output Formatting
+		//
+
+		"noErrorTruncation": true,
+		"preserveWatchOutput": false,
+		"pretty": true,
+
+		//
+		// Completeness
+		//
+
+		"skipDefaultLibCheck": false,
+		"skipLibCheck": false
+	},
+	"include": [
+		"./src/**/*.js",
+		"./src/**/*.ts"
+	]
+}
