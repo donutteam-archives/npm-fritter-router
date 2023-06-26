@@ -16,6 +16,7 @@
 	],
 	"author": "Donut Team",
 	"license": "MIT",
+	"type": "module",
 	"dependencies": {
 		"path-to-regexp": "^6.2.1"
 	},
