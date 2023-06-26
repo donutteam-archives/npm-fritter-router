@@ -1,3 +1,6 @@
+## 1.0.3
+Fixing some stupid mistakes that made no sense and caused this to not really work at all.
+
 ## 1.0.2
 Setting `type` to `module` in `package.json`.
 

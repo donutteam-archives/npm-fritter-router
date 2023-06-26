@@ -64,80 +64,84 @@ export class FritterRouterMiddleware
 			fritterContext.routeParameters = {};
 
 			//
-			// Get Route Path
-			//
-
-			const routePath = fritterContext.fritterRequest.getPath();
-
-			//
-			// Convert Path to RegExp
-			//
-
-			const rawRouteParameters : Key[] = [];
-
-			const regExp = pathToRegexp(routePath, rawRouteParameters, options.pathToRegexpOptions);
-
-			//
 			// Attempt to Match Route
 			//
 
 			for (const route of this.routes)
 			{
+				//
+				// Check Method
+				//
+
 				if (route.method != "ALL" && route.method != fritterContext.fritterRequest.getHttpMethod())
 				{
 					continue;
 				}
 
-				const matches = regExp.exec(route.path);
+				//
+				// Convert Path to RegExp
+				//
+	
+				const rawRouteParameters : Key[] = [];
+	
+				const regExp = pathToRegexp(route.path, rawRouteParameters, options.pathToRegexpOptions);
 
-				if (matches != null)
+				//
+				// Try to Match Path
+				//
+
+				const matches = regExp.exec(fritterContext.fritterRequest.getPath());
+
+				if (matches == null)
 				{
-					//
-					// Add Route Parameters to Fritter Context
-					//
-
-					for (const [ matchIndex, match ] of matches.slice(1).entries())
-					{
-						const rawRouteParameter = rawRouteParameters[matchIndex];
-
-						if (rawRouteParameter != null)
-						{
-							fritterContext.routeParameters[rawRouteParameter.name] = match;
-						}
-					}
-
-					//
-					// Execute Route
-					//
-
-					let currentIndex = -1;
-
-					const middlewares =
-						[
-							...route.middlewares ?? [],
-							route.handler,
-						];
-
-					const executeMiddleware = async () =>
-					{
-						currentIndex += 1;
-
-						const nextMiddleware = middlewares[currentIndex];
-
-						if (nextMiddleware != null)
-						{
-							await nextMiddleware(fritterContext, executeMiddleware);
-						}
-						else
-						{
-							await next();
-						}
-					};
-
-					await executeMiddleware();
-
-					return;
+					continue;
 				}
+
+				//
+				// Add Route Parameters to Fritter Context
+				//
+
+				for (const [ matchIndex, match ] of matches.slice(1).entries())
+				{
+					const rawRouteParameter = rawRouteParameters[matchIndex];
+
+					if (rawRouteParameter != null)
+					{
+						fritterContext.routeParameters[rawRouteParameter.name] = match;
+					}
+				}
+
+				//
+				// Execute Route
+				//
+
+				let currentIndex = -1;
+
+				const middlewares =
+					[
+						...route.middlewares ?? [],
+						route.handler,
+					];
+
+				const executeMiddleware = async () =>
+				{
+					currentIndex += 1;
+
+					const nextMiddleware = middlewares[currentIndex];
+
+					if (nextMiddleware != null)
+					{
+						await nextMiddleware(fritterContext, executeMiddleware);
+					}
+					else
+					{
+						await next();
+					}
+				};
+
+				await executeMiddleware();
+
+				return;
 			}
 
 			//
