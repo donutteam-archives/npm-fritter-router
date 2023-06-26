@@ -2,6 +2,10 @@
 // Imports
 //
 
+import fs from "node:fs";
+import path from "node:path";
+import url from "node:url";
+
 import { FritterContext, FritterMiddlewareFunction, HTTPMethod } from "@fritter/core";
 import { pathToRegexp, Key, ParseOptions, TokensToRegexpOptions } from "path-to-regexp";
 
@@ -43,7 +47,7 @@ export interface FritterRouterRoute
 export class FritterRouterMiddleware
 {
 	/** The middleware function that executes the routing logic. */
-	execute : FritterMiddlewareFunction<FritterRouterContext>;
+	public readonly execute : FritterMiddlewareFunction<FritterRouterContext>;
 
 	/** The routes this middleware will use to route requests. */
 	protected readonly routes : FritterRouterRoute[] = [];
@@ -53,7 +57,7 @@ export class FritterRouterMiddleware
 	 *
 	 * @param options Options for the middleware.
 	 */
-	constructor(options : FritterRouterMiddlewareOptions = {})
+	public constructor(options : FritterRouterMiddlewareOptions = {})
 	{
 		this.execute = async (fritterContext : FritterRouterContext, next) =>
 		{
@@ -81,9 +85,9 @@ export class FritterRouterMiddleware
 				//
 				// Convert Path to RegExp
 				//
-	
+
 				const rawRouteParameters : Key[] = [];
-	
+
 				const regExp = pathToRegexp(route.path, rawRouteParameters, options.pathToRegexpOptions);
 
 				//
@@ -157,15 +161,71 @@ export class FritterRouterMiddleware
 	 *
 	 * @param route The route to add.
 	 */
-	addRoute(route : FritterRouterRoute) : void
+	public addRoute(route : FritterRouterRoute) : void
 	{
 		this.routes.push(route);
 	}
 
 	/** Gets the routes this router is using. */
-	getRoutes() : FritterRouterRoute[]
+	public getRoutes() : FritterRouterRoute[]
 	{
 		return this.routes;
+	}
+
+	/** Attempts to load a route from the given JavaScript file. */
+	public async loadRoute(jsFilePath : string) : Promise<FritterRouterRoute | null>
+	{
+		const routeContainer = await import(url.pathToFileURL(jsFilePath).toString()) as { fritterRouterRoute? : FritterRouterRoute };
+
+		if (routeContainer.fritterRouterRoute == null)
+		{
+			return null;
+		}
+
+		this.addRoute(routeContainer.fritterRouterRoute);
+
+		return routeContainer.fritterRouterRoute;
+	}
+
+	/** Recursively loads all routes in the given directory. */
+	public async loadRoutesDirectory(directoryPath : string) : Promise<FritterRouterRoute[]>
+	{
+		const directoryRoutes : FritterRouterRoute[] = [];
+
+		const directoryEntries = await fs.promises.readdir(directoryPath,
+			{
+				withFileTypes: true,
+			});
+
+		for (const directoryEntry of directoryEntries)
+		{
+			const directoryEntryPath = path.join(directoryPath, directoryEntry.name);
+
+			if (directoryEntry.isDirectory())
+			{
+				const subdirectoryRoutes = await this.loadRoutesDirectory(directoryEntryPath);
+
+				directoryRoutes.push(...subdirectoryRoutes);
+			}
+			else
+			{
+				const parsedPath = path.parse(directoryEntryPath);
+
+				if (parsedPath.ext != ".js")
+				{
+					continue;
+				}
+
+				const directoryRoute = await this.loadRoute(directoryEntryPath);
+
+				if (directoryRoute != null)
+				{
+					directoryRoutes.push(directoryRoute);
+				}
+			}
+		}
+
+		return directoryRoutes;
 	}
 
 	/**
@@ -173,7 +233,7 @@ export class FritterRouterMiddleware
 	 *
 	 * @param route The route to remove.
 	 */
-	removeRoute(route : FritterRouterRoute) : void
+	public removeRoute(route : FritterRouterRoute) : void
 	{
 		const index = this.routes.indexOf(route);
 
