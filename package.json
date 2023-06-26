@@ -1,6 +1,6 @@
 {
 	"name": "@fritter/router",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "A router middleware for the Fritter web framework.",
 	"main": "./lib/index.js",
 	"scripts": {
