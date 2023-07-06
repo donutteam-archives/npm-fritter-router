@@ -1,3 +1,10 @@
+## 1.2.0
+
+* Added the `loadRoutesFile` method. This method takes the path to a JavaScript file that exports `fritterRouterRoute` and/or `fritterRouterRoutes`.
+	* This allows multiple routes to be loaded from a single file.
+* Updated `loadRoutesDirectory` to use `loadRoutesFile` instead of `loadRoute`.
+* Subsequently, the `loadRoute` method has been deprecated.
+
 ## 1.1.0
 Adding the ability to recursively load routes from a directory.
 

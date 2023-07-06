@@ -172,7 +172,11 @@ export class FritterRouterMiddleware
 		return this.routes;
 	}
 
-	/** Attempts to load a route from the given JavaScript file. */
+	/**
+	 * Attempts to load a route from the given JavaScript file.
+	 *
+	 * @deprecated Use loadRoutesFile instead.
+	 */
 	public async loadRoute(jsFilePath : string) : Promise<FritterRouterRoute | null>
 	{
 		const routeContainer = await import(url.pathToFileURL(jsFilePath).toString()) as { fritterRouterRoute? : FritterRouterRoute };
@@ -185,6 +189,42 @@ export class FritterRouterMiddleware
 		this.addRoute(routeContainer.fritterRouterRoute);
 
 		return routeContainer.fritterRouterRoute;
+	}
+
+	/** Attempts to load routes from the given JavaScript file. */
+	public async loadRoutesFile(jsFilePath : string) : Promise<FritterRouterRoute[]>
+	{
+		const routeContainer = await import(url.pathToFileURL(jsFilePath).toString()) as
+			{
+				fritterRouterRoute? : FritterRouterRoute,
+				fritterRouterRoutes? : FritterRouterRoute[],
+			};
+
+		if (routeContainer.fritterRouterRoute == null && routeContainer.fritterRouterRoutes == null)
+		{
+			return [];
+		}
+
+		const routes : FritterRouterRoute[] = [];
+
+		if (routeContainer.fritterRouterRoute != null)
+		{
+			routes.push(routeContainer.fritterRouterRoute);
+
+			this.addRoute(routeContainer.fritterRouterRoute);
+		}
+
+		if (routeContainer.fritterRouterRoutes != null)
+		{
+			for (const route of routeContainer.fritterRouterRoutes)
+			{
+				routes.push(route);
+
+				this.addRoute(route);
+			}
+		}
+
+		return routes;
 	}
 
 	/** Recursively loads all routes in the given directory. */
@@ -216,12 +256,9 @@ export class FritterRouterMiddleware
 					continue;
 				}
 
-				const directoryRoute = await this.loadRoute(directoryEntryPath);
+				const directoryRoutes = await this.loadRoutesFile(directoryEntryPath);
 
-				if (directoryRoute != null)
-				{
-					directoryRoutes.push(directoryRoute);
-				}
+				directoryRoutes.push(...directoryRoutes);
 			}
 		}
 
