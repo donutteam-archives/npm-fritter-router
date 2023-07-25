@@ -1,3 +1,6 @@
+## 1.2.1
+Updated packages.
+
 ## 1.2.0
 
 * Added the `loadRoutesFile` method. This method takes the path to a JavaScript file that exports `fritterRouterRoute` and/or `fritterRouterRoutes`.
