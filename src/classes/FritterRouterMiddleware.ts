@@ -111,7 +111,7 @@ export class FritterRouterMiddleware
 
 					if (rawRouteParameter != null)
 					{
-						fritterContext.routeParameters[rawRouteParameter.name] = match;
+						fritterContext.routeParameters[rawRouteParameter.name] = decodeURIComponent(match);
 					}
 				}
 

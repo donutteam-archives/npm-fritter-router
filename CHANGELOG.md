@@ -1,5 +1,7 @@
 ## 1.2.1
-Updated packages.
+
+* Updated packages.
+* Fixed a bug where routeParameters were not decoded when they should have been.
 
 ## 1.2.0
 
