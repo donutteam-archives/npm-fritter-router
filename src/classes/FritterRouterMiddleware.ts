@@ -221,8 +221,6 @@ export class FritterRouterMiddleware
 		{
 			for (const route of routes)
 			{
-				routes.push(route);
-
 				this.addRoute(route);
 			}
 
@@ -243,7 +241,7 @@ export class FritterRouterMiddleware
 			});
 
 		for (const directoryEntry of directoryEntries)
-		{
+	{
 			const directoryEntryPath = path.join(directoryPath, directoryEntry.name);
 
 			if (directoryEntry.isDirectory())
@@ -261,9 +259,9 @@ export class FritterRouterMiddleware
 					continue;
 				}
 
-				const directoryRoutes = await this.loadRoutesFile(directoryEntryPath);
+				const fileRoutes = await this.loadRoutesFile(directoryEntryPath);
 
-				directoryRoutes.push(...directoryRoutes);
+				directoryRoutes.push(...fileRoutes);
 			}
 		}
 
