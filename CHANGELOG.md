@@ -1,3 +1,6 @@
+## 1.2.2
+Updating packages.
+
 ## 1.2.1
 
 * Updated packages.
