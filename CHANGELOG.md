@@ -1,5 +1,11 @@
 ## 1.2.2
-Updating packages.
+
+* Updating packages.
+* Renaming various symbols and deprecating the old names. This is to make the library more consistent with the rest of the Fritter ecosystem.
+* Added support for exporting routes as `fritterRouterMiddlewareRoute`, `fritterRouterMiddlewareRoutes`, `route` or `routes` from route files loaded with `loadRoutesFile` or `loadRoutesDirectory`.
+	* The original `fritterRouterRoute` and `fritterRouterRoutes` are prioritized first.
+	* Then `frirterRouterMiddlewareRoute` and `fritterRouterMiddlewareRoutes`.
+	* Then `route` and `routes`.
 
 ## 1.2.1
 

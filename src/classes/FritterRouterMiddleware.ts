@@ -14,7 +14,7 @@ import { pathToRegexp, Key, ParseOptions, TokensToRegexpOptions } from "path-to-
 //
 
 /** Extensions to the FritterContext made by the FritterRouterMiddleware. */
-export interface FritterRouterContext extends FritterContext
+export interface FritterRouterMiddlewareFritterContext extends FritterContext
 {
 	/** The parameters extracted from the route's path. */
 	routeParameters : { [key : string] : string };
@@ -28,7 +28,7 @@ export interface FritterRouterMiddlewareOptions
 }
 
 /** A route that the FritterRouterMiddleware can route requests to. */
-export interface FritterRouterRoute
+export interface FritterRouterMiddlewareRoute
 {
 	/** The HTTP method of the route. */
 	method : HTTPMethod | "ALL";
@@ -47,10 +47,10 @@ export interface FritterRouterRoute
 export class FritterRouterMiddleware
 {
 	/** The middleware function that executes the routing logic. */
-	public readonly execute : FritterMiddlewareFunction<FritterRouterContext>;
+	public readonly execute : FritterMiddlewareFunction<FritterRouterMiddlewareFritterContext>;
 
 	/** The routes this middleware will use to route requests. */
-	protected readonly routes : FritterRouterRoute[] = [];
+	protected readonly routes : FritterRouterMiddlewareRoute[] = [];
 
 	/**
 	 * Creates a new FritterRouterMiddleware instance.
@@ -59,7 +59,7 @@ export class FritterRouterMiddleware
 	 */
 	public constructor(options : FritterRouterMiddlewareOptions = {})
 	{
-		this.execute = async (fritterContext : FritterRouterContext, next) =>
+		this.execute = async (fritterContext : FritterRouterMiddlewareFritterContext, next) =>
 		{
 			//
 			// Initialise Fritter Context
@@ -161,13 +161,13 @@ export class FritterRouterMiddleware
 	 *
 	 * @param route The route to add.
 	 */
-	public addRoute(route : FritterRouterRoute) : void
+	public addRoute(route : FritterRouterMiddlewareRoute) : void
 	{
 		this.routes.push(route);
 	}
 
 	/** Gets the routes this router is using. */
-	public getRoutes() : FritterRouterRoute[]
+	public getRoutes() : FritterRouterMiddlewareRoute[]
 	{
 		return this.routes;
 	}
@@ -177,9 +177,9 @@ export class FritterRouterMiddleware
 	 *
 	 * @deprecated Use loadRoutesFile instead.
 	 */
-	public async loadRoute(jsFilePath : string) : Promise<FritterRouterRoute | null>
+	public async loadRoute(jsFilePath : string) : Promise<FritterRouterMiddlewareRoute | null>
 	{
-		const routeContainer = await import(url.pathToFileURL(jsFilePath).toString()) as { fritterRouterRoute? : FritterRouterRoute };
+		const routeContainer = await import(url.pathToFileURL(jsFilePath).toString()) as { fritterRouterRoute? : FritterRouterMiddlewareRoute };
 
 		if (routeContainer.fritterRouterRoute == null)
 		{
@@ -192,45 +192,50 @@ export class FritterRouterMiddleware
 	}
 
 	/** Attempts to load routes from the given JavaScript file. */
-	public async loadRoutesFile(jsFilePath : string) : Promise<FritterRouterRoute[]>
+	public async loadRoutesFile(jsFilePath : string) : Promise<FritterRouterMiddlewareRoute[]>
 	{
 		const routeContainer = await import(url.pathToFileURL(jsFilePath).toString()) as
 			{
-				fritterRouterRoute? : FritterRouterRoute,
-				fritterRouterRoutes? : FritterRouterRoute[],
+				fritterRouterRoute? : FritterRouterMiddlewareRoute,
+				fritterRouterRoutes? : FritterRouterMiddlewareRoute[],
+
+				fritterRouterMiddlewareRoute? : FritterRouterMiddlewareRoute,
+				fritterRouterMiddlewareRoutes? : FritterRouterMiddlewareRoute[],
+
+				route? : FritterRouterMiddlewareRoute,
+				routes? : FritterRouterMiddlewareRoute[],
 			};
 
-		if (routeContainer.fritterRouterRoute == null && routeContainer.fritterRouterRoutes == null)
+		const route = routeContainer.fritterRouterRoute ?? routeContainer.fritterRouterMiddlewareRoute ?? routeContainer.route;
+
+		if (route != null)
 		{
-			return [];
+			this.addRoute(route);
+
+			return [ route ];
 		}
 
-		const routes : FritterRouterRoute[] = [];
+		const routes = routeContainer.fritterRouterRoutes ?? routeContainer.fritterRouterMiddlewareRoutes ?? routeContainer.routes;
 
-		if (routeContainer.fritterRouterRoute != null)
+		if (routes != null)
 		{
-			routes.push(routeContainer.fritterRouterRoute);
-
-			this.addRoute(routeContainer.fritterRouterRoute);
-		}
-
-		if (routeContainer.fritterRouterRoutes != null)
-		{
-			for (const route of routeContainer.fritterRouterRoutes)
+			for (const route of routes)
 			{
 				routes.push(route);
 
 				this.addRoute(route);
 			}
+
+			return routes;
 		}
 
-		return routes;
+		return [];
 	}
 
 	/** Recursively loads all routes in the given directory. */
-	public async loadRoutesDirectory(directoryPath : string) : Promise<FritterRouterRoute[]>
+	public async loadRoutesDirectory(directoryPath : string) : Promise<FritterRouterMiddlewareRoute[]>
 	{
-		const directoryRoutes : FritterRouterRoute[] = [];
+		const directoryRoutes : FritterRouterMiddlewareRoute[] = [];
 
 		const directoryEntries = await fs.promises.readdir(directoryPath,
 			{
@@ -270,7 +275,7 @@ export class FritterRouterMiddleware
 	 *
 	 * @param route The route to remove.
 	 */
-	public removeRoute(route : FritterRouterRoute) : void
+	public removeRoute(route : FritterRouterMiddlewareRoute) : void
 	{
 		const index = this.routes.indexOf(route);
 
@@ -280,3 +285,13 @@ export class FritterRouterMiddleware
 		}
 	}
 }
+
+//
+// Legacy Names
+//
+
+/** @deprecated */
+export type FritterRouterContext = FritterRouterMiddlewareFritterContext;
+
+/** @deprecated */
+export type FritterRouterRoute = FritterRouterMiddlewareRoute;
