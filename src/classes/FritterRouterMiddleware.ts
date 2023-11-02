@@ -172,25 +172,6 @@ export class FritterRouterMiddleware
 		return this.routes;
 	}
 
-	/**
-	 * Attempts to load a route from the given JavaScript file.
-	 *
-	 * @deprecated Use loadRoutesFile instead.
-	 */
-	public async loadRoute(jsFilePath : string) : Promise<FritterRouterMiddlewareRoute | null>
-	{
-		const routeContainer = await import(url.pathToFileURL(jsFilePath).toString()) as { fritterRouterRoute? : FritterRouterMiddlewareRoute };
-
-		if (routeContainer.fritterRouterRoute == null)
-		{
-			return null;
-		}
-
-		this.addRoute(routeContainer.fritterRouterRoute);
-
-		return routeContainer.fritterRouterRoute;
-	}
-
 	/** Attempts to load routes from the given JavaScript file. */
 	public async loadRoutesFile(jsFilePath : string) : Promise<FritterRouterMiddlewareRoute[]>
 	{
@@ -283,13 +264,3 @@ export class FritterRouterMiddleware
 		}
 	}
 }
-
-//
-// Legacy Names
-//
-
-/** @deprecated */
-export type FritterRouterContext = FritterRouterMiddlewareFritterContext;
-
-/** @deprecated */
-export type FritterRouterRoute = FritterRouterMiddlewareRoute;
