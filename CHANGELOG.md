@@ -1,7 +1,9 @@
 ## 2.0.0
 
 * Updating packages.
-* Removing deprecated fields.
+* Removing deprecated fields and methods.
+* Removed support for exporting `fritterRouterRoute` and `fritterRouterRoutes`.
+* Now allows any of `fritterRouterMiddlewareRoute`, `fritterRouterMiddlewareRoutes`, `route` and `routes` to be a single route or an array to allow more flexibility.
 
 ## 1.2.3
 Fixed a mistake that caused Node to straight up crash.

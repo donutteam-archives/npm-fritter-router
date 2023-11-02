@@ -177,38 +177,38 @@ export class FritterRouterMiddleware
 	{
 		const routeContainer = await import(url.pathToFileURL(jsFilePath).toString()) as
 			{
-				fritterRouterRoute? : FritterRouterMiddlewareRoute,
-				fritterRouterRoutes? : FritterRouterMiddlewareRoute[],
-
-				fritterRouterMiddlewareRoute? : FritterRouterMiddlewareRoute,
-				fritterRouterMiddlewareRoutes? : FritterRouterMiddlewareRoute[],
-
-				route? : FritterRouterMiddlewareRoute,
-				routes? : FritterRouterMiddlewareRoute[],
+				fritterRouterMiddlewareRoute? : FritterRouterMiddlewareRoute | FritterRouterMiddlewareRoute[],
+				fritterRouterMiddlewareRoutes? : FritterRouterMiddlewareRoute | FritterRouterMiddlewareRoute[],
+				route? : FritterRouterMiddlewareRoute | FritterRouterMiddlewareRoute[],
+				routes? : FritterRouterMiddlewareRoute | FritterRouterMiddlewareRoute[],
 			};
 
-		const route = routeContainer.fritterRouterRoute ?? routeContainer.fritterRouterMiddlewareRoute ?? routeContainer.route;
+		const routeOrRoutes =
+			routeContainer.fritterRouterMiddlewareRoute ??
+			routeContainer.fritterRouterMiddlewareRoutes ??
+			routeContainer.route ??
+			routeContainer.routes;
 
-		if (route != null)
+		if (routeOrRoutes == null)
 		{
-			this.addRoute(route);
-
-			return [ route ];
+			return [];
 		}
 
-		const routes = routeContainer.fritterRouterRoutes ?? routeContainer.fritterRouterMiddlewareRoutes ?? routeContainer.routes;
-
-		if (routes != null)
+		if (Array.isArray(routeOrRoutes))
 		{
-			for (const route of routes)
+			for (const route of routeOrRoutes)
 			{
 				this.addRoute(route);
 			}
 
-			return routes;
+			return routeOrRoutes;
 		}
+		else
+		{
+			this.addRoute(routeOrRoutes);
 
-		return [];
+			return [ routeOrRoutes ];
+		}
 	}
 
 	/** Recursively loads all routes in the given directory. */
@@ -222,7 +222,7 @@ export class FritterRouterMiddleware
 			});
 
 		for (const directoryEntry of directoryEntries)
-	{
+		{
 			const directoryEntryPath = path.join(directoryPath, directoryEntry.name);
 
 			if (directoryEntry.isDirectory())
