@@ -1,3 +1,6 @@
+## 1.2.4
+Updating packages.
+
 ## 1.2.3
 Fixed a mistake that caused Node to straight up crash.
 
