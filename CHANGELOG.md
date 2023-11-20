@@ -1,3 +1,8 @@
+## 2.0.1
+
+* Updating packages.
+* Removed `eslint` and `@donutteam/eslint-config` dev dependencies.
+
 ## 2.0.0
 
 * Updating packages.
