@@ -1,6 +1,7 @@
 ## 2.0.2
 
 * Moved `@fritter/core` to peer dependencies.
+* Updated packages.
 
 ## 2.0.1
 

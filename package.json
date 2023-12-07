@@ -16,7 +16,7 @@
 	"license": "MIT",
 	"type": "module",
 	"dependencies": {
-		"@types/node": "^20.9.2",
+		"@types/node": "^20.10.4",
 		"path-to-regexp": "^6.2.1"
 	},
 	"peerDependencies": {
@@ -24,6 +24,6 @@
 	},
 	"devDependencies": {
 		"rimraf": "^5.0.5",
-		"typescript": "^5.3.2"
+		"typescript": "^5.3.3"
 	}
 }
