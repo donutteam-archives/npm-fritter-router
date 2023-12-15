@@ -109,7 +109,7 @@ export class FritterRouterMiddleware
 				{
 					const rawRouteParameter = rawRouteParameters[matchIndex];
 
-					if (rawRouteParameter != null)
+					if (rawRouteParameter != null && match != undefined)
 					{
 						fritterContext.routeParameters[rawRouteParameter.name] = decodeURIComponent(match);
 					}

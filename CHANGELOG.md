@@ -1,3 +1,6 @@
+## 2.0.3
+Fixed a bug where optional parameters would be added as a string of "undefined" instead of actually being undefined.
+
 ## 2.0.2
 
 * Moved `@fritter/core` to peer dependencies.
